@@ -1,7 +1,7 @@
 import pandas as pd
 
-def get_weights(df: pd.DataFrame):
-    df = df.drop(['competition', 'team', 'full_name', 'stat_type', 'side', 'created_at', 'updated_at', 'player_id', 'team_id', 'game_id', 'competition_id', 'season'], axis=1) 
+def get_weights(df: pd.DataFrame, columns_to_remove: list):
+    df = df.drop(columns_to_remove, axis=1) 
     df = df.fillna(value=0) 
     
     grouped_df = df.groupby('cluster_label').sum().T
