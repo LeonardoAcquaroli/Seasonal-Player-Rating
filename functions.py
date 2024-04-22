@@ -12,7 +12,7 @@ def get_cluster_features_weights(df: pd.DataFrame) -> dict:
     ZERO_VAR_FEATURES = df.drop('cluster_label', axis=1).std()[df.drop('cluster_label', axis=1).std() == 0].index
     df = df.drop(ZERO_VAR_FEATURES, axis=1)
     # Fillna with 0
-    df = df.fillna(value=0) 
+    df = df.fillna(value=0)
     
     grouped_df = df.groupby('cluster_label').sum().T
     grouped_df['total'] = grouped_df.loc[:, grouped_df.columns != 'cluster_label'].sum(axis=1)
@@ -20,12 +20,9 @@ def get_cluster_features_weights(df: pd.DataFrame) -> dict:
     for col in (col for col in grouped_df.columns):
         # Element-wise division
         grouped_df[col] = grouped_df[col].div(grouped_df['total'])
-        minmax_scaler = MinMaxScaler()
+        minmax_scaler = MinMaxScaler((0.001,1))
         # MinMax scaler instead division by sum of column to have weightd from 0 to 1 that point to the importance of the feature for the cluster
         grouped_df[col] = minmax_scaler.fit_transform(grouped_df[col].values.reshape(-1, 1))
-        # Fill the NaNs with the minimum weight (different from zero) in order not to have zeros and thus nullify the feature coefficient
-        min_value = grouped_df[col][grouped_df[col] > 0].min()
-        grouped_df[col] = grouped_df[col].replace(to_replace=0, value=min_value)
 
     grouped_df = grouped_df.fillna(0)
     grouped_df = grouped_df.drop('total', axis=1)
