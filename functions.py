@@ -1,30 +1,30 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.linear_model import Lasso
 
-
-
-def get_weights(df: pd.DataFrame, columns_to_remove: list = []):
+def get_weights(df: pd.DataFrame, columns_to_remove: list = []) -> dict:
     df = df.drop(columns_to_remove, axis=1) 
     df = df.fillna(value=0) 
     
     grouped_df = df.groupby('cluster_label').sum().T
-
     grouped_df['total'] = grouped_df.loc[:, grouped_df.columns != 'cluster_label'].sum(axis=1)
 
-    for col in (col for col in grouped_df.columns if col != 'cluster_label'):
+    for col in (col for col in grouped_df.columns):
+        # Element-wise division
         grouped_df[col] = grouped_df[col].div(grouped_df['total'])
-        grouped_df[col] = grouped_df[col] / grouped_df[col].sum()
+        minmax_scaler = MinMaxScaler()
+        # MinMax scaler instead division by sum of column to have weightd from 0 to 1 that point to the importance of the feature for the cluster
+        grouped_df[col] = minmax_scaler.fit_transform(grouped_df[col].values.reshape(-1, 1))
+        # Fill the NaNs with the minimum weight (different from zero) in order not to have zeros and thus nullify the feature coefficient
+        min_value = grouped_df[col][grouped_df[col] > 0].min()
+        grouped_df[col] = grouped_df[col].replace(to_replace=0, value=min_value)
 
-    grouped_df = grouped_df.fillna(value=0)
+    grouped_df = grouped_df.fillna(0)
     grouped_df = grouped_df.drop('total', axis=1)
-    grouped_df = grouped_df.to_dict()
-
-    return grouped_df
-
-
-
+    grouped_dict = grouped_df.to_dict()
+    
+    return grouped_dict
 
 def feature_selection(df: pd.DataFrame, alpha: float = 0.01):
 
