@@ -2,9 +2,16 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.linear_model import Lasso
+from constants import ClusterFeaturesWeightsConstants
 
-def get_weights(df: pd.DataFrame, columns_to_remove: list = []) -> dict:
-    df = df.drop(columns_to_remove, axis=1) 
+def get_cluster_features_weights(df: pd.DataFrame) -> dict:
+    columns_to_remove = ClusterFeaturesWeightsConstants().columns_to_remove
+    # Drop useless columns
+    df = df.drop(columns_to_remove, axis=1)
+    # Drop zero variance features
+    ZERO_VAR_FEATURES = df.drop('cluster_label', axis=1).std()[df.drop('cluster_label', axis=1).std() == 0].index
+    df = df.drop(ZERO_VAR_FEATURES, axis=1)
+    # Fillna with 0
     df = df.fillna(value=0) 
     
     grouped_df = df.groupby('cluster_label').sum().T
