@@ -159,7 +159,7 @@ class ClusterFeaturesWeightsConstants:
     ]
 
     METRICS_ASSISTS = [
-        'goal_assist',
+        # 'goal_assist',
         'goal_assist_setplay',
         'goal_assist_openplay',
         'goal_assist_intentional',
