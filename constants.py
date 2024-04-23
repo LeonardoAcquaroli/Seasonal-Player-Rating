@@ -27,13 +27,6 @@ class ClusterFeaturesWeightsConstants:
     'att_obx_centre',
     'att_bx_right',
     'att_bx_left',
-    'att_corner',
-    'att_fastbreak',
-    'att_freekick_goal',
-    'att_freekick_target',
-    'att_freekick_total',
-    'att_freekick_miss',
-    'att_freekick_post',
     'att_goal_high_centre',
     'att_goal_high_left',
     'att_goal_high_right',
@@ -88,7 +81,6 @@ class ClusterFeaturesWeightsConstants:
     'att_rf_goal',
     'att_rf_target',
     'att_rf_total',
-    'att_setpiece',
     'att_sv_high_centre',
     'att_sv_high_left',
     'att_sv_high_right',
@@ -97,8 +89,6 @@ class ClusterFeaturesWeightsConstants:
     'att_sv_low_right',
     'attempts_conceded_ibox',
     'attempts_conceded_obox',
-    'attempts_ibox',
-    'attempts_obox',
     'game_started',
     'winning_goal',
     'goals_set_pieces_faced',
@@ -116,7 +106,8 @@ class ClusterFeaturesWeightsConstants:
     'passes_left',
     'passes_right',
     'leftside_pass',
-    'rightside_pass'
+    'rightside_pass',
+    'pen_goals_conceded'
     ]
 
     METRICS_GK = [
